@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-color-changer
+  labels:
+    app: flask-color-changer
+spec:
+  replicas: 1  # Number of pods
+  selector:
+    matchLabels:
+      app: flask-color-changer
+  template:
+    metadata:
+      labels:
+        app: flask-color-changer
+    spec:
+      containers:
+      - name: flask-color-changer
+        image: akhil1993/flask-color-changer:latest  # Replace with your Docker Hub image
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: log-volume
+          mountPath: /app/logs  # Mount logs directory inside the container
+      volumes:
+      - name: log-volume
+        emptyDir: {}  # Ephemeral storage for logs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-color-changer-service
+spec:
+  selector:
+    app: flask-color-changer
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  type: NodePort  # Exposes the service on a high-range port on each node

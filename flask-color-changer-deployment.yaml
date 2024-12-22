@@ -22,6 +22,17 @@ spec:
         volumeMounts:
         - name: log-volume
           mountPath: /app/logs  # Mount logs directory inside the container
+        env:
+          - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: flask-color-changer-config
+              key: LOG_LEVEL
+          - name: DEFAULT_COLOR  # Inject DEFAULT_COLOR from ConfigMap
+          valueFrom:
+            configMapKeyRef:
+              name: flask-color-changer-config
+              key: DEFAULT_COLOR
       volumes:
       - name: log-volume
         emptyDir: {}  # Ephemeral storage for logs
@@ -38,3 +49,11 @@ spec:
     port: 5000
     targetPort: 5000
   type: NodePort  # Exposes the service on a high-range port on each node
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-color-changer-config
+data:
+  LOG_LEVEL: "INFO"  # Options: DEBUG, INFO, ERROR, etc.
+  DEFAULT_COLOR: "blue"  # Default color to use

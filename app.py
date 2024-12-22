@@ -26,6 +26,9 @@ logger = logging.getLogger()
 logger.addHandler(log_handler)
 logger.setLevel(log_handler.level)  # Set root logger level
 
+logger.debug(f"DEFAULT_COLOR: {DEFAULT_COLOR}")
+logger.debug(f"LOG_LEVEL: {LOG_LEVEL}")
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     try:

@@ -1,3 +1,4 @@
+# pods
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,6 +39,7 @@ spec:
       - name: log-volume
         emptyDir: {}  # Ephemeral storage for logs
 ---
+# configmap
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,6 +53,7 @@ spec:
     targetPort: 5000
   type: NodePort  # Exposes the service on a high-range port on each node
 ---
+# services
 apiVersion: v1
 kind: ConfigMap
 metadata:

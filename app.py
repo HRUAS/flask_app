@@ -9,7 +9,6 @@ LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG').upper()
 DEFAULT_COLOR = os.getenv('DEFAULT_COLOR', 'red')
 
 print(f"LOG_LEVEL: {LOG_LEVEL}")
-
 print(f"DEFAULT_COLOR: {DEFAULT_COLOR}")
 
 app = Flask(__name__)

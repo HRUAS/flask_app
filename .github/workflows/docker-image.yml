@@ -30,10 +30,14 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Generate timestamp for the image tag
+      id: timestamp
+      run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag flask-color-changer:$(date +%s)
+      run: docker build . --file Dockerfile --tag flask-color-changer:${{ env.TAG }}
 
     - name: Push the Docker image to Docker Hub
       run: |
-        docker tag flask-color-changer:$(date +%s) akhil1993/flask-color-changer:latest
+        docker tag flask-color-changer:${{ env.TAG }} akhil1993/flask-color-changer:latest
         docker push akhil1993/flask-color-changer:latest

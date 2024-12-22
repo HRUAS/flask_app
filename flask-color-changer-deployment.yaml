@@ -1,3 +1,14 @@
+---
+# creating configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-color-changer-config
+data:
+  LOG_LEVEL: "INFO"  # Options: DEBUG, INFO, ERROR, etc.
+  DEFAULT_COLOR: "blue"  # Default color to use
+---
+# deployment file
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,6 +48,7 @@ spec:
       - name: log-volume
         emptyDir: {}  # Ephemeral storage for logs
 ---
+# services
 apiVersion: v1
 kind: Service
 metadata:
@@ -49,11 +61,3 @@ spec:
     port: 5000
     targetPort: 5000
   type: NodePort  # Exposes the service on a high-range port on each node
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: flask-color-changer-config
-data:
-  LOG_LEVEL: "INFO"  # Options: DEBUG, INFO, ERROR, etc.
-  DEFAULT_COLOR: "blue"  # Default color to use

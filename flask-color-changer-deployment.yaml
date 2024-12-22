@@ -17,6 +17,7 @@ spec:
       containers:
       - name: flask-color-changer
         image: akhil1993/flask-color-changer:latest  # Replace with your Docker Hub image
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         volumeMounts:

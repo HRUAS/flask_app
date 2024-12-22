@@ -23,16 +23,16 @@ spec:
         - name: log-volume
           mountPath: /app/logs  # Mount logs directory inside the container
         env:
-          - name: LOG_LEVEL
-          valueFrom:
-            configMapKeyRef:
-              name: flask-color-changer-config
-              key: LOG_LEVEL
-          - name: DEFAULT_COLOR  # Inject DEFAULT_COLOR from ConfigMap
-          valueFrom:
-            configMapKeyRef:
-              name: flask-color-changer-config
-              key: DEFAULT_COLOR
+        - name: LOG_LEVEL
+        valueFrom:
+          configMapKeyRef:
+            name: flask-color-changer-config
+            key: LOG_LEVEL
+        - name: DEFAULT_COLOR  # Inject DEFAULT_COLOR from ConfigMap
+        valueFrom:
+          configMapKeyRef:
+            name: flask-color-changer-config
+            key: DEFAULT_COLOR
       volumes:
       - name: log-volume
         emptyDir: {}  # Ephemeral storage for logs

@@ -63,7 +63,7 @@ def initialize_database():
         logger.info("Database initialized successfully")
     except mysql.connector.Error as e:
         logger.critical(f"Database initialization failed: {e}", exc_info=True)
-        print(f"Database initialization failed: {e}", exc_info=True)
+        print(f"Database initialization failed: {e}")
         raise
 
 print("starting db initialisation")

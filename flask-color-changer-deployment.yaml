@@ -1,3 +1,4 @@
+# Deployment for Flask app
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,10 +35,25 @@ spec:
             configMapKeyRef:
               name: flask-color-changer-config
               key: DEFAULT_COLOR
+        - name: DB_HOST
+          value: flask-mysql  # Matches the MySQL service name
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: DB_NAME
+          value: flaskdb
       volumes:
       - name: log-volume
         emptyDir: {}  # Ephemeral storage for logs
 ---
+# Service for Flask app
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,6 +67,7 @@ spec:
     targetPort: 5000
   type: NodePort  # Exposes the service on a high-range port on each node
 ---
+# ConfigMap for Flask app
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -58,3 +75,65 @@ metadata:
 data:
   LOG_LEVEL: "INFO"  # Options: DEBUG, INFO, ERROR, etc.
   DEFAULT_COLOR: "blue"  # Default color to use
+---
+# Secret for MySQL credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  username: cm9vdA==  # Base64 encoded value for "root"
+  password: cGFzc3dvcmQxMjM=  # Base64 encoded value for "password123"
+---
+# Deployment for MySQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-mysql
+  labels:
+    app: flask-mysql
+spec:
+  replicas: 1  # Number of MySQL pods
+  selector:
+    matchLabels:
+      app: flask-mysql
+  template:
+    metadata:
+      labels:
+        app: flask-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7  # MySQL version 5.7
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          value: flaskdb
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql  # Persistent data storage
+      volumes:
+      - name: mysql-data
+        emptyDir: {}  # Replace with a persistent volume claim for production
+---
+# Service for MySQL
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-mysql
+spec:
+  selector:
+    app: flask-mysql
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+  clusterIP: None  # Headless service for direct communication

@@ -66,6 +66,10 @@ def initialize_database():
         print(f"Database initialization failed: {e}", exc_info=True)
         raise
 
+print("starting db initialisation")
+initialize_database()
+print("starting db initialisation completed")
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     try:

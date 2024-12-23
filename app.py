@@ -47,6 +47,7 @@ def get_db_connection():
 # Ensure the database table exists
 def initialize_database():
     try:
+        print("Table creation started")
         connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute("""
@@ -62,6 +63,7 @@ def initialize_database():
         logger.info("Database initialized successfully")
     except mysql.connector.Error as e:
         logger.critical(f"Database initialization failed: {e}", exc_info=True)
+        print(f"Database initialization failed: {e}", exc_info=True)
         raise
 
 @app.route('/', methods=['GET', 'POST'])
@@ -119,6 +121,7 @@ def is_valid_color(color_name):
 
 if __name__ == '__main__':
     try:
+        print("inside main, starting db initialisation")
         initialize_database()  # Ensure database and table exist
         debug_mode = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
         app.run(host='0.0.0.0', port=5000, debug=debug_mode)

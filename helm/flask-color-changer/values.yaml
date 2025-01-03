@@ -1,0 +1,24 @@
+replicaCount: 1
+
+image:
+  repository: akhil1993/flask-color-changer
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: NodePort
+
+app:
+  logLevel: INFO
+  defaultColor: blue
+
+database:
+  host: flask-mysql
+  user: root
+  password: password123
+  name: flaskdb
+
+mysql:
+  replicaCount: 1
+  version: 5.7
+
